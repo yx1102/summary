@@ -61,3 +61,122 @@ p{
 }
 ```
 
+
+
+## 魔方cube
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+  <style>
+    html{
+      perspective: 800px;
+    }
+    .cube{
+      width: 200px;
+      height: 200px;
+      margin: 100px auto;
+        /*设置 3d 效果*/
+      transform-style: preserve-3d;
+      animation: run 10s infinite;
+    }
+    .cube_item{
+      opacity: 0.7;
+      position: absolute;
+    }
+     /* 右侧面，把视角放到图片正面，z轴直戳自己，即可知道需要设置translateZ */
+    .cube_item:nth-child(1){
+      transform: rotateY(90deg) translateZ(100px);
+    }
+      /* 左侧面，把视角放到图片正面，z轴直戳自己，即可知道需要设置translateZ */
+    .cube_item:nth-child(2){
+      transform: rotateY(-90deg) translateZ(100px);
+    }
+      /* 上侧面，把视角放到图片正面，z轴直戳自己，即可知道需要设置translateZ */
+    .cube_item:nth-child(3){
+      transform: rotateX(90deg) translateZ(100px);
+    }
+      /* 下侧面，把视角放到图片正面，z轴直戳自己，即可知道需要设置translateZ */
+    .cube_item:nth-child(4){
+      transform: rotateX(-90deg) translateZ(100px);
+    }
+      /* 后面，先将图片旋转到后面，再设置translateZ */
+    .cube_item:nth-child(5){
+      transform: rotateY(180deg) translateZ(100px);
+    }
+      /* 前面，把视角放到图片正面，z轴直戳自己，即可知道需要设置translateZ */
+    .cube_item:nth-child(6){
+      transform: translateZ(100px);
+    }
+    img{
+      width: 100%;
+      vertical-align: top;
+    }
+
+    @keyframes run {
+      form{
+        transform:rotateX(0) rotateZ(0);
+      }
+      to{
+        transform:rotateX(360deg) rotateZ(360deg);
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="cube">
+    <div class="cube_item"><img src="./img/14/1.jpg" alt=""></div>
+    <div class="cube_item"><img src="./img/14/2.jpg" alt=""></div>
+    <div class="cube_item"><img src="./img/14/3.jpg" alt=""></div>
+    <div class="cube_item"><img src="./img/14/4.jpg" alt=""></div>
+    <div class="cube_item"><img src="./img/14/5.jpg" alt=""></div>
+    <div class="cube_item"><img src="./img/14/6.jpg" alt=""></div>
+  </div>
+</body>
+</html>
+```
+
+
+
+## 放大图片
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <style>
+        .img-wrapper{
+            width: 200px;
+            height: 200px;
+            border: 1px red solid;
+            overflow: hidden;
+        }
+
+        img{
+            transition: .2s;
+        }
+
+        .img-wrapper:hover img{
+            transform:scale(1.2);
+        }
+
+    </style>
+</head>
+<body>
+    <div class="img-wrapper">
+        <img src="an.jpg" width="100%">
+    </div>
+</body>
+</html>
+```
+

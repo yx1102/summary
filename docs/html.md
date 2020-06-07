@@ -1,5 +1,9 @@
 # html
 
+### IE兼容
+
+![](https://i.bmp.ovh/imgs/2020/06/5c7a8bff191ec0aa.png)
+
 ### meta
 
  meta主要用于设置网页中的一些元数据，元数据不是给用户看
@@ -18,6 +22,12 @@
       
 3. title标签的内容会作为搜索结果的超链接上的文字显示  
 ```
+
+### rgba和opacity区别
+
+rgba只是设置颜色透明
+
+opacity可以将整个元素设置透明
 
 ### img
 
@@ -56,7 +66,9 @@
       - 一般都是一些需要和网页一起加载的图片才会使用base64
 ```
 
+### display
 
+设置行内块级元素inline-block，会把元素之间的空格或换行当成文本占据一定的位置，有缝隙出现 ，解决bug可以在**父元素**设置font-size=0
 
 ### audio/video
 
@@ -76,6 +88,120 @@
 </audio>
 ```
 
+#### H5音视频
+
+##### 1 音视频的标签
+###### 1.1 video
+视频标签
+**属性：**
+* src   视频的地址 
+* width  视频宽
+* heihgt 视频高
+* controls   控制条 （不需给值）
+* loop   循环播放(不需要给值)
+* autoplay  自动播放（不需给值）  chrome浏览器静音之后才能自动播放
+* muted  静音 （不需给值）
+* preload   预加载(不需给值) (没有autoplay才有意义)  （默认情况下，在点击播放的时候才自动加载，设置了preload,打开页面就加载）
+* poster 图片地址(没有autoplay才有意义)
+
+
+###### 1.2 audio
+音频标签
+**属性：**
+
+* src   音频频的地址 
+* controls   控制条 （不需给值）
+* loop   循环播放(不需要给值)
+* autoplay  自动播放（不需给值）  chrome浏览器静音之后才能自动播放
+* muted  静音 （不需给值）
+* preload   预加载(不需给值) (没有autoplay才有意义)  （默认情况下，在点击播放的时候才自动加载，设置了preload,打开页面就加载）
+
+
+###### 1.3 source
+资源标签，加载音视频，嵌套在 `<video>` `<audio>` 中使用
+**属性：**
+* src   资源地址
+* type  指定资源的类型
+```
+type属性值：
+
+视频：	
+
+type='video/webm; codecs="vp8, vorbis"'
+
+type='video/ogg; codecs="theora, vorbis"'
+
+type='video/mp4; codecs="avc1.42E01E, mp4a.40.2"'
+
+音频：
+
+type='audio/ogg; codecs="vorbis"'
+
+type='audio/aac; codecs="aac"'
+
+type='audio/mpeg'	
+```
+
+
+
+##### 2 音视频DOM
+###### 2.1 方法
+* play()   播放
+* pause()  暂停
+* load()   加载
+
+
+###### 2.2 属性
+* volume 获取或设置音量
+
+* playbackRate  获取或设置速度
+
+* duration  总时间
+
+* currentTime 当前时间(可以设置的)
+
+* paused  是否暂停
+
+* muted 是否静音
+
+* loop   是否循环播放
+
+* controls  是否有控制条
+
+* preload  是否预加载
+
+* autoplay 是否自动播放
+
+* src  资源地址
+
+  **video独有的：**
+
+* width
+
+* height
+
+* poster
+
+* videoWidth  视频资源本身的大小
+
+* videoHeight 视频资源本身的大小
+
+
+
+
+###### 2.3 事件
+* loadstart   开始加载
+* loadedmetadata  资源加载完毕
+* loadeddata  在 loadedmetadata 之后触发
+* canplay  播放之前
+* play   播放的时候
+* pause  暂停的时候
+* ended  播放结束的时候
+* timeupdate  播放过程实时触发
+* seeked  调整进度条之后
+* volumechange 音量调整之后
+* ratechange 播放速度调整 
+
 
 
 ### css选择器
@@ -90,9 +216,13 @@ div, p{}
 
 #### 选择下一个兄弟
 
+`注:是兄弟，父子的不起作用`
+
 前一个 + 下一个 	p + span{}  `注：仅代表p的下一个元素是span才有效，如果中间有个div，则不会生效`
 
 #### 选择下边所有的兄弟
+
+`注:是兄弟，父子的不起作用`
 
 兄 ~ 弟 	p ~ span{}
 
@@ -596,6 +726,16 @@ border-radius: 20px / 40px; 代表横向20px，纵向40px
 
 
 
+#### 案例
+
+##### 二级菜单
+
+通过伪元素去除下边框线
+
+![](https://i.bmp.ovh/imgs/2020/06/fe5f1b5a346bdb7d.png)
+
+
+
 ### 字体图标
 
 #### Font Awesome
@@ -714,16 +854,29 @@ img{
 - nowrap 不换行
 - pre 保留空白
 
-**显示省略号**
+**单行溢出显示省略号**
 
 ```css
 p{
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    line-clamp: 2;
+    white-space: nowrap;	/*强制不换行*/
+    overflow: hidden;	/*溢出的文字隐藏*/
+    text-overflow: ellipsis; /*文字溢出用省略号显示*/
 }
 ```
+
+**多行溢出显示省略号**	存在兼容性
+
+```css
+p{
+    overflow: hidden;
+    display: -webkit-box;
+    text-overflow: ellipsis;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+}
+```
+
+
 
 ### 背景
 
@@ -1053,6 +1206,8 @@ transition:all 2s cubic-bezier(.24,.95,.82,-0.88) 1s;
 
 ### 动画animation
 
+!> form 不是 from
+
 动画可以自动触发动态效果
 
 设置动画效果，必须先要设置一个关键帧@keyframes，关键帧设置了动画执行每一个步骤
@@ -1060,7 +1215,7 @@ transition:all 2s cubic-bezier(.24,.95,.82,-0.88) 1s;
 ```css
 @keyframes test {
   /* from表示动画的开始位置 也可以使用 0% */
-  from{
+  form{
       margin-left: 0;
       background-color: orange;
   } 
@@ -1197,6 +1352,8 @@ demo: 打开页面动画自动播放【变色和移动】，hover状态下动画
 
 ### 变形transform
 
+!> transform 不是 transfrom
+
 #### 平移translate
 
 左手定则，大拇指向右，食指向下，中指朝向自身
@@ -1239,6 +1396,49 @@ rotateZ() 变大变小
 
 
 #### 缩放scaleX
+
+scaleX() 水平方向缩放
+
+scaleY() 垂直方向缩放
+
+scale() 双方向的缩放
+
+
+
+##### 字体10px
+
+```html
+<style>
+.lili{
+  transform: scale(0.8);
+}
+</style>
+
+<body>
+    <div>111111111</div>
+    <div class="lili">222</div>
+</body>
+```
+
+
+
+#### 改变原点transform-origin
+
+默认值 center
+
+```css
+.box1{
+	width: 100px;
+	height: 100px;
+	background-color: #bfa;
+	transition:2s;
+	margin: 100px auto;
+	transform-origin:20px 20px; 
+}
+.box1:hover{
+	transform:scale(2)
+}
+```
 
 
 

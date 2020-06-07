@@ -40,6 +40,103 @@ if (this.$route.query.redirect) {
 
 
 
+## 401错误
+
+需结合 `router.beforeEach` 使用
+
+```js
+axios.interceptors.request.use(config => {
+  // 将json格式请求体转换为urlencode
+  const { method, data } = config
+  if (method.toLowerCase() === 'post' && data instanceof Object) {
+    // 此处要转成urlencode模式，不是转成对象模式
+    config.data = qs.stringify(data)
+  }
+
+  // 判断页面是否需要携带token才能请求
+  if (config.headers.needToken) {
+    const token = JSON.parse(localStorage.getItem('token_key'))
+    if (token) {
+      config.headers.Authorization = token
+    } 
+  }
+  return config;
+});
+
+
+// Add a response interceptor
+axios.interceptors.response.use(response => {
+
+  //直接返回，作为下一个成功结果的回调
+  return response.data
+
+}, error => {
+  // 判断是什么错误
+  const { response, message} = error
+  // 1. token超时
+  if (response.status === 401) {
+    // 调用退出登录的方法
+    store.dispatch('resetUser')
+    if (router.currentRoute.path !== '/login') {
+      Toast(message)
+      router.push('/login')
+    }
+  }
+
+  // 2. 一般请求错误
+  else {
+    Toast('请求错误' + message)
+  }
+
+  return new Promise(() => { })
+});
+
+ 
+axios.interceptors.response.use(function (response) {
+    return response;
+  }, function (error) {
+     if(error.response.status == 401 || error.response.status == 402){
+         router.push('/login')
+         Vue.prototype.$msg.fail(error.response.data.message)
+     }
+    return Promise.reject(error);
+  });
+```
+
+
+
+## router页面使用封装的组件
+
+router.js
+
+```js
+import { Toast } from 'mint-ui
+Toast(message)
+```
+
+
+
+或
+
+main.js
+
+```js
+import vant from 'vant'
+import {Toast} from 'vant'
+import 'vant/lib/index.css';
+Vue.prototype.$msg = Toast
+```
+
+router.js
+
+```js
+Vue.prototype.$msg.fail(error.response.data.message)
+```
+
+
+
+
+
 ## 记住密码
 
 ![1590388030771](C:\Users\Administrator\AppData\Roaming\Typora\typora-user-images\1590388030771.png)
@@ -178,6 +275,129 @@ export default {
 input:-webkit-autofill {
   	-webkit-box-shadow: 0 0 0px 1000px white inset;  //使用足够大的纯色内阴影覆盖黄色背景
   	border: 1px solid #CCC !important;
+}
+</style>
+```
+
+
+
+## tabbar封装
+
+```vue
+<template>
+  <footer class="footer_guide">
+    <span class="guide_item" :class="{on: $route.path==='/video'}" @click="goTo('/video')">
+      <span class="item_icon">
+        <i class="fas fa-video"></i>
+      </span>
+      <span>视频</span>
+    </span>
+    <span class="guide_item" :class="{on: $route.path==='/music'}" @click="goTo('/music')">
+      <span class="item_icon">
+        <i class="fas fa-music"></i>
+      </span>
+      <span>音乐</span>
+    </span>
+    <span class="guide_item" :class="{on: $route.path==='/profile'}" @click="goTo('/profile')">
+      <span class="item_icon">
+        <i class="fas fa-user"></i>
+      </span>
+      <span>我的</span>
+    </span>
+  </footer>
+</template>
+
+<script>
+export default {
+  data() {
+    return {};
+  },
+  methods: {
+    goTo(path) {
+      // 编程式路由导航
+      this.$router.replace(path);
+    }
+  }
+};
+</script>
+<style lang='less' scoped>
+.footer_guide {
+  border-top: 1px solid #ccc;
+  position: fixed;
+  z-index: 100;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #fff;
+  width: 100%;
+  height: 50px;
+  display: flex;
+  .guide_item {
+    display: flex;
+    flex: 1;
+    text-align: center;
+    flex-direction: column;
+    align-items: center;
+    margin: 5px;
+    color: #999999;
+    &.on {
+      color: #02a774;
+    }
+    span {
+      font-size: 12px;
+      margin-top: 2px;
+      margin-bottom: 2px;
+      .iconfont {
+        font-size: 22px;
+      }
+    }
+  }
+}
+</style>
+```
+
+
+
+## navbar封装
+
+```vue
+<template>
+  <div class="navbar">
+    <div class="left">
+      <slot name="left"></slot>
+    </div>
+    <div class="center">
+      <slot name="center"></slot>
+    </div>
+    <div class="right">
+      <slot name="right"></slot>
+    </div>
+  </div>
+</template>
+<script>
+export default {};
+</script>
+<style lang="less" scoped>
+.navbar {
+  display: flex;
+  height: 44px;
+  line-height: 44px;
+
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 999;
+
+  text-align: center;
+
+  .left,
+  .right {
+    width: 60px;
+  }
+  .center {
+    flex: 1;
+  }
 }
 </style>
 ```
